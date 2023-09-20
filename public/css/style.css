@@ -1,0 +1,50 @@
+@charset "utf-8";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;600;700;800;900&display=swap');
+* { box-sizing: border-box}
+body{
+    font-size: 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color:#222;
+}
+a, a:link{
+    color:#444;
+}
+/** 목록 보기 디자인 **/
+.bbslist{
+   width:100%;
+   border-bottom: 2px solid #333;
+   margin-bottom: 40px;
+}
+.bbslist th{
+    padding-top:10px;
+    padding-bottom:10px;
+    border-top: 1px solid #999;
+    border-bottom: 2px solid #666;
+    text-align:center;
+    position:relative;
+}
+.bbslist th:not(:last-child)::after{
+    content: "";
+    display:block;
+    width:1px;
+    height:15px;
+    top:15px;
+    right:0;
+    background:#999;
+    position:absolute;
+}
+.bbslist td{
+    padding:15px;
+    border-bottom:1px solid #999;
+}
+.bbslist td.title{
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+a.page-link{
+    color:#333;
+}
+.pagination .page-item.active .page-link{
+    background-color:#666 !important;
+}
