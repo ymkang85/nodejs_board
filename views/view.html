@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-5">{{title}}</h1>
+<div class="row flex-column view">
+    <div class="title py-3 pl-2">
+        제목을 이곳에 씁니다.
+    </div>
+</div>
+<div class="row view_info py-3">
+    <div class="col-8 d-flex">
+        <div class="date pr-5">2023.09.22</div>
+        <div class="write pr-5">홍길동</div>
+        <div class="hit">hit: 33</div>
+    </div>
+    <div class="col-4 sns text-right">
+        <a href="#" class='mr-3'><i class="ri-instagram-line"></i></a>
+        <a href="#" class='mr-3'><i class="ri-facebook-circle-line"></i></a>
+        <a href="#" class='mr-3'><i class="ri-kakao-talk-line"></i></a>
+        <a href="#"><i class="ri-youtube-line"></i></a>
+    </div>
+</div>
+<div class="content py-5">
+    <img class="text-center" src="images/404.png" alt="404">
+    <p>
+        목숨이 그들은 그들에게 스며들어 관현악이며, 가는 하였으며, 황금시대다. 꾸며 같으며, 만물은 천하를 피어나기 이상의 생명을 것이다.
+    </p>
+    <p>
+        긴지라 너의 소리다.이것은 곳이 얼음과 이상이 끓는 것이다. 간에 같이, 청춘 기관과 속잎나고, 품에 피가 열매를 끓는 피다. 군영과 풀이 이상의 있으랴? 남는 갑 안고, 풀밭에 그림자는 하여도 힘차게
+        사는가
+        자신과 철환하였는가?
+    </p>
+    <p>
+        기쁘며, 살 그들의 주는 인도하겠다는 인간의 트고, 칼이다. 아니한 많이 사랑의 있으며, 힘차게 그러므로 불어 있을 하는 끓는다. 속에 청춘은 아름답고 없으면 이상 구할 말이다. 예수는 것은 주는
+        피어나는
+        희망의 따뜻한 위하여서.
+    </p>
+
+</div>
+<div class="row justify-content-end mb-5">
+    <a href="#" class="btn btn-dark text-white px-3 mr-3">답변</a>
+    <a href="#" class="btn btn-dark text-white px-3 mr-3">수정</a>
+    <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delModal"
+        data-toggle="modal">삭제</button>
+    <a href="#" class="btn btn-dark text-white px-3">목록</a>
+</div>
+
+<div class="modal fade" role="dialog" id="delModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">삭제</h5>
+                <button type="button" class="close" data-dismiss="modal" arial-label="close">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <p>삭제하시려면 비밀번호를 입력하세요.</p>
+                    <input type="password" clas="form-control" placeholder="비밀번호" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary">삭제하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
