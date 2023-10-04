@@ -22,20 +22,17 @@
             </tr>
         </thead>
         <tobody>
+            
+            {% for rs in row %}
             <tr>
-                <td class="text-center">1</td>
-                <td class="title"><a href="/view">제목입니다.</a></td>
-                <td class="text-center">홍길동</td>
-                <td class="text-center">2023.09.19</td>
-                <td class="text-center">11</td>
+                <td class="text-center">{{rs.num}}</td>
+                <td class="title"><a href="/view">{{rs.title}}</a></td>
+                <td class="text-center">{{rs.writer}}</td>
+                <td class="text-center">{{rs.wdate.getFullYear()}}년 {{rs.wdate.getMonth()+1}}월 {{rs.wdate.getDate()}}일</td>
+                <td class="text-center">{{rs.memoCount}}</td>
             </tr>
-            <tr>
-                <td class="text-center">2</td>
-                <td class="title"><a href="/view">제목입니다.</a></td>
-                <td class="text-center">홍길동</td>
-                <td class="text-center">2023.09.20</td>
-                <td class="text-center">25</td>
-            </tr>
+            {% endfor %}
+
         </tobody>
     </table>
 </div>
@@ -82,7 +79,6 @@
             </ul>
         </div>
         <div class="col-md-3 text-right">
-            <a href="/" class="btn btn-secondary mr-4">목록</a>
             <a href="/write" class="btn btn-secondary">글쓰기</a> 
         </div>
     </div>
