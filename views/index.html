@@ -26,9 +26,14 @@
             {% for rs in row %}
             <tr>
                 <td class="text-center">{{rs.num}}</td>
-                <td class="title"><a href="/view">{{rs.title}}</a></td>
+                <td class="title">
+                    {% if rs.grLayer %}
+                    {{rs.grLayer}}
+                    <i class="ri-corner-down-right-line"></i>
+                    {% endif %}
+                    <a href="/view/{{rs.num}}">{{rs.title}}</a></td>
                 <td class="text-center">{{rs.writer}}</td>
-                <td class="text-center">{{rs.wdate.getFullYear()}}년 {{rs.wdate.getMonth()+1}}월 {{rs.wdate.getDate()}}일</td>
+                <td class="text-center">{{rs.wdate}}</td>
                 <td class="text-center">{{rs.memoCount}}</td>
             </tr>
             {% endfor %}

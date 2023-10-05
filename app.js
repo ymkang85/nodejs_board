@@ -11,6 +11,7 @@ app.set('port', process.env.PORT || 8080);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
     express: app,
+    autoescape : true, // false 일 경우 html 태그 허용, true 불가
     watch: true
 });
 
