@@ -8,14 +8,14 @@
 <div class="row flex-column view">
     {% for rs in row %}
     <div class="title py-3 pl-2">
-        {{rs.title}}
+        {{row[0].title}}
     </div>
 </div>
 <div class="row view_info py-3">
     <div class="col-8 d-flex">
-        <div class="date pr-5">{{rs.wdate}}</div>
-        <div class="write pr-5">{{rs.writer}}</div>
-        <div class="hit">{{rs.hit}}</div>
+        <div class="date pr-5">{{row[0].wdate}}</div>
+        <div class="write pr-5">{{row[0].writer}}</div>
+         <div class="hit">hit: {{row[0].hit}}</div>
     </div>
     <div class="col-4 sns text-right">
         <a href="#" class='mr-3'><i class="ri-instagram-line"></i></a>
@@ -30,7 +30,7 @@
 {% endfor %}
 <div class="row justify-content-end mb-5">
     <a href="#" class="btn btn-dark text-white px-3 mr-3">답변</a>
-    <a href="edit/{{rs.num}}" class="btn btn-dark text-white px-3 mr-3">수정</a>
+    <a href="/edit/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">수정</a>
     <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delModal"
         data-toggle="modal">삭제</button>
     <a href="/" class="btn btn-dark text-white px-3">목록</a>

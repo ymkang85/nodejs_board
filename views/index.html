@@ -22,22 +22,21 @@
             </tr>
         </thead>
         <tobody>
-            
             {% for rs in row %}
             <tr>
                 <td class="text-center">{{rs.num}}</td>
                 <td class="title">
                     {% if rs.grLayer %}
-                    {{rs.grLayer}}
-                    <i class="ri-corner-down-right-line"></i>
+                      <img src="images/blank.png" height="20" width="{{rs.grLayer}}" />
+                      <i class="ri-corner-down-right-line"></i>
                     {% endif %}
-                    <a href="/view/{{rs.num}}">{{rs.title}}</a></td>
+                   <a href="/view/{{rs.num}}">{{rs.title}}</a></td>
                 <td class="text-center">{{rs.writer}}</td>
                 <td class="text-center">{{rs.wdate}}</td>
                 <td class="text-center">{{rs.memoCount}}</td>
             </tr>
             {% endfor %}
-
+ 
         </tobody>
     </table>
 </div>
