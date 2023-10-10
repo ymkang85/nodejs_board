@@ -58,14 +58,20 @@ router.post("/write", (req, res) => {
   res.redirect('/');
 });
 
-router.get("/view/:num", (req, res)=>{
+router.get("/view/:num", (req, res) => {
   const { num } = req.params;
   const sql = "select * from ndboard where num = ?";
-  conn.query( sql, [num], (err, row, fields)=> {
-    if(err) {
-       console.log(err);
-    }else{
-        res.render("view", { title: "게시판 내용보기", row});
+  conn.query(sql, [num], (err, row, fields) => {
+    if (err) {
+      console.log(err);
+    } else {
+      let odate;
+      for (let rs of row) {
+        odate = new Date(rs.wdate);
+        rs.wdate = `${odate.getFullYear()}-${odate.getMonth() + 1}-${odate.getDate()}`;
+      }
+      console.log(row);
+      res.render("view", { title: "게시판 내용보기", row });
     }
   });
 });
@@ -103,27 +109,27 @@ router.post("/edit/:num", (req, res) => {
 router.post("/pwdlogin", (req, res) => {
   const { num, pass, title, content } = req.body;
   let sql = "select * from ndboard where num = ? and userpass = ?";
-  conn.query( sql, [num, pass], (err, row, fields)=> {
-    if(err) {
-       console.log(err);
-    }else{
-       if(row.length > 0) {
-         sql = "update ndboard set ? where num = ?";
-         conn.query(sql,[{ 
-                title: title,
-                contents: content  
-         }, num],
-         (err, res,fields)=>{
-            if(err) 
-               console.log(err);
-            else{
-               return (res.write(1));
+  conn.query(sql, [num, pass], (err, row, fields) => {
+    if (err) {
+      console.log(err);
+    } else {
+      if (row.length > 0) {
+        sql = "update ndboard set ? where num = ?";
+        conn.query(sql, [{
+          title: title,
+          contents: content
+        }, num],
+          (err, res, fields) => {
+            if (err)
+              console.log(err);
+            else {
+              return (res.write(1));
             }
-         });
-          console.log("수정성공");
-       }else{
-          return(res.write(0));
-       }
+          });
+        console.log("수정성공");
+      } else {
+        return (res.write(0));
+      }
     }
   });
 })
