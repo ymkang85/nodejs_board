@@ -70,7 +70,6 @@ router.get("/view/:num", (req, res) => {
         odate = new Date(rs.wdate);
         rs.wdate = `${odate.getFullYear()}-${odate.getMonth() + 1}-${odate.getDate()}`;
       }
-      console.log(row);
       res.render("view", { title: "게시판 내용보기", row });
     }
   });
@@ -103,33 +102,35 @@ router.post("/edit/:num", (req, res) => {
         console.log('업데이트 성공');
       }
     });
-  res.redirect('/view/' + num);
+  res.redirect('/view/'+num);
 });
 
 router.post("/pwdlogin", (req, res) => {
   const { num, pass, title, content } = req.body;
   let sql = "select * from ndboard where num = ? and userpass = ?";
-  conn.query(sql, [num, pass], (err, row, fields) => {
-    if (err) {
-      console.log(err);
-    } else {
-      if (row.length > 0) {
-        sql = "update ndboard set ? where num = ?";
-        conn.query(sql, [{
-          title: title,
-          contents: content
-        }, num],
-          (err, res, fields) => {
-            if (err)
+  conn.query( sql, [num, pass], (err, row, fields)=> {
+    if(err) {
+       console.log(err);
+    }else{
+       if(row.length > 0) {
+        console.log(row);
+         sql = "update ndboard set ? where num = ?";
+         conn.query(sql,[{ 
+                title: title,
+                content: content  
+         }, num],
+         (err, fields)=>{
+            if(err) {
+              res.send('0');
               console.log(err);
-            else {
-              return (res.write(1));
+            }else{
+              res.send('1');
+              console.log("수정성공"); 
             }
-          });
-        console.log("수정성공");
-      } else {
-        return (res.write(0));
-      }
+         });               
+       }else{
+          res.send('0');
+       }
     }
   });
 })
