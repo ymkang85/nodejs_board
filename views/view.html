@@ -15,7 +15,7 @@
     <div class="col-8 d-flex">
         <div class="date pr-5">{{row[0].wdate}}</div>
         <div class="write pr-5">{{row[0].writer}}</div>
-         <div class="hit">hit: {{row[0].hit}}</div>
+        <div class="hit">hit: {{row[0].hit}}</div>
     </div>
     <div class="col-4 sns text-right">
         <a href="#" class='mr-3'><i class="ri-instagram-line"></i></a>
@@ -45,14 +45,14 @@
                     <i class="ri-close-line"></i>
                 </button>
             </div>
-            <form>
+            <form id="delete_form">
                 <div class="modal-body">
                     <p>삭제하시려면 비밀번호를 입력하세요.</p>
                     <input type="password" clas="form-control" placeholder="비밀번호" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary">삭제하기</button>
+                    <button type="button" class="btn btn-primary" id="submit">삭제하기</button>
                 </div>
             </form>
         </div>
@@ -61,5 +61,26 @@
 {% endblock %}
 
 {% block script %}
-
+<script>
+    $('#submit').click(function () {
+        const forms = $('#delete_form').serialize();
+        $.ajax({
+            url: '/pwdlogin',
+            type: 'get',
+            data: forms,
+            success: function (data) {
+                const rs = parseInt(data);
+                console.log(rs);
+                if (rs > 0) {
+                    alert('수정하였습니다.');
+                    location.href = "/view/" + num;
+                } else {
+                    alert('비밀번호를 다시 확인하세요.');
+                    return;
+                }
+            }
+        });
+    });
+    });
+</script>
 {% endblock %}

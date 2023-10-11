@@ -135,4 +135,13 @@ router.post("/pwdlogin", (req, res) => {
   });
 })
 
+router.get('/pwdlogin/:id', (req, res)=>{
+  const id = req.params.id;
+  const sql = 'delete from ndboard where id=?';
+  conn.query(sql,id, (error, rows)=>{
+      if(error) console.log(error);
+      res.redirect('/');
+  });
+});//sql delete구문
+
 module.exports = router;
