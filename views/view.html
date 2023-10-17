@@ -29,7 +29,7 @@
 </div>
 {% endfor %}
 <div class="row justify-content-end mb-5">
-    <a href="#" class="btn btn-dark text-white px-3 mr-3">답변</a>
+    <a href="/rewrite/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">답변</a>
     <a href="/edit/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">수정</a>
     <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delModal"
         data-toggle="modal">삭제</button>
@@ -48,11 +48,14 @@
             <form id="delete_form">
                 <div class="modal-body">
                     <p>삭제하시려면 비밀번호를 입력하세요.</p>
-                    <input type="password" clas="form-control" placeholder="비밀번호" />
+                    <input type="password" id="password_del" clas="form-control" placeholder="비밀번호" />
                 </div>
+
+                <input type="hidden" id="delnum" value="{{row[0].num}}" />
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" id="submit">삭제하기</button>
+                    <button type="button" class="btn btn-danger" id="del">삭제하기</button>
                 </div>
             </form>
         </div>
@@ -65,7 +68,7 @@
     $('#submit').click(function () {
         const forms = $('#delete_form').serialize();
         $.ajax({
-            url: '/pwdlogin',
+            url: '/pwddelete',
             type: 'get',
             data: forms,
             success: function (data) {
@@ -73,14 +76,13 @@
                 console.log(rs);
                 if (rs > 0) {
                     alert('수정하였습니다.');
-                    location.href = "/view/" + num;
+                    location.href = "/";
                 } else {
                     alert('비밀번호를 다시 확인하세요.');
                     return;
                 }
             }
         });
-    });
     });
 </script>
 {% endblock %}
