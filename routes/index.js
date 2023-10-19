@@ -9,39 +9,38 @@ mysqlConnObj.open(conn);  //연결 출력
 //기본 주소 설정
 router.get('/', (req, res) => {
   let page = 1;
-  if (req.query.page) {
+  if(req.query.page){
     page = parseInt(req.query.page);
   }
-  const maxlist = 10;
-  const perPage = 5;
-  let offset = (page - 1) * maxlist;
+  const maxlist = 10;  //한 화면에 보여줄 목록 수
+
+  let offset = (page - 1)*maxlist;  //limit 에 첫번째로 출력할 번호
   let sql = "select count(*) as maxcount from ndboard";
-  conn.query(sql, (err, row) => {
-    if (err) {
-      console.error(err)
-    } else {
-      const maxcount = row[0].maxcount;
-      //전체 페이지 수 
-      const totalPage = Math.ceil(maxcount / perPage);
+  conn.query(sql, (err, row, fields) => {
+      if(err){
+       console.error(err)
+      }else{
 
-      let limit = `limit ${offset} , ${maxlist}`;
+          const maxcount = row[0].maxcount; //전체 게시글 수   
+          let limit = ` limit ${offset} , ${maxlist}`;  
 
-      sql = "select * from ndboard order by num asc, grnum desc " + limit;
-      conn.query(sql, (err, row, fields) => {
-        if (err)
-          console.log(err);
-        else {
-          let odate;
-          for (let rs of row) {
-            rs.grLayer *= 30;
-            odate = new Date(rs.wdate);
-            rs.wdate = `${odate.getFullYear()}-${odate.getMonth() + 1}-${odate.getDate()}`;
-          }
-          res.render('index', { title: "게시판 목록", row: row });
-        }
-      })
-    }
-  });
+          sql = "select * from ndboard order by orNum desc, grNum asc" + limit;
+          conn.query(sql, (err, row, fields) => {
+             if(err)
+                 console.log(err);
+             else {
+                 let odate;
+                 for(let rs of row) { 
+                   rs.grLayer *= 30;
+                   odate = new Date(rs.wdate);
+                   rs.wdate = `${odate.getFullYear()}-${odate.getMonth()+1}-${odate.getDate()}`;
+                 } 
+                 //console.log(row);
+                 res.render('index', { title: "게시판 목록", totalCount: maxcount, maxList: maxlist, page: page, row: row});
+             }
+          }); //list
+       } //if else 
+   });  //maxcount
 });
 
 router.get("/write", (req, res) => {

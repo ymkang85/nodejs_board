@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .listbox {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+
+        .listbox li {
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="listbox">
+
+    </ul>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        /*
+           listScale //한 페이지에 출력할 게시물 수
+           pageScale //한 페이지에 출력할 페이지 수
+           totalCount //전체 게시글 수
+           start //시작점
+        */
+       $(function(){
+           $('#listbox').html(getPaging(10, 15, 678, 25, '/public/test.html'));
+       });
+ 
+       function getPaging(listScale, pageScale, totalCount, start, link){
+          let li='', sPage, pg, npg, pp, np, preStart, nextStart, lastStart;
+ 
+          if(totalCount > listScale) {
+            sPage = Math.floor(start/(listScale*pageScale));
+            pp = start - listScale;
+            np = start + listScale;
+ 
+            //처음으로 이동
+            if(pp >= 0) {
+               li += `<li><a href="${link}?page=0">처음</a></li>`; 
+            }
+         
+            //이전페이지 이동 - pageScale만큼 앞으로 이동함
+            if(start + 1 > listScale * pageScale){
+               preStart = listScale * (sPage * pageScale - 1);
+               li += `<li><a href="${link}?page=${preStart}">이전</a></li>`;
+            }
+ 
+            //pageScale만큼 게시물 출력
+            for( i = 0; i < pageScale; i++){
+               pg = (sPage * pageScale + i) * listScale;
+               npg = sPage * pageScale + i + 1;
+               if(pg != start) {
+                  li += `<li><a href="${link}?page=${npg}">${npg}</a></li>`;
+               }else{
+                  li += `<li>${npg}</li>`;
+               }
+            }
+ 
+            //다음페이지 이동 -- pageScale 만큼 뒤로 이동
+            if(totalCount > ((sPage + 1)*listScale*pageScale)){
+               nextStart = (sPage + 1)*listScale*pageScale;
+               li += `<li><a href="${link}?page=${nextStart}">${nextStart}</a></li>`;
+            }
+ 
+            //마지막 페이지
+            if( np < totalCount ){
+              lastStart = (Math.floor(totalCount/listScale))*listScale;
+              li += `<li><a href=${link}?page=${lastStart}">마지막</a></li>`;
+            }
+ 
+         }else{
+             li = `<li>1</li>`;
+         }
+          return li;
+       }       
+     </script>  
+</body>
+
+</html>
