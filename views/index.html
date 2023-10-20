@@ -6,11 +6,11 @@
 <div class="row justify-content-center">
     <table class="bbslist table-hover">
         <colgroup>
-          <col width="10%">
-          <col>
-          <col width="15%">
-          <col width="15%"> 
-          <col width="10%">
+            <col width="10%">
+            <col>
+            <col width="15%">
+            <col width="15%">
+            <col width="10%">
         </colgroup>
         <thead>
             <tr>
@@ -27,38 +27,40 @@
                 <td class="text-center">{{rs.num}}</td>
                 <td class="title">
                     {% if rs.grLayer %}
-                      <img src="images/blank.png" height="20" width="{{rs.grLayer}}" />
-                      <i class="ri-corner-down-right-line"></i>
+                    <img src="images/blank.png" height="20" width="{{rs.grLayer}}" />
+                    <i class="ri-corner-down-right-line"></i>
                     {% endif %}
-                   <a href="/view/{{rs.num}}">{{rs.title}}</a></td>
+                    <a href="/view/{{rs.num}}">{{rs.title}}</a>
+                    {% if rs.memoCount != 0 %}
+                    ({{rs.memoCount}})
+                    {% endif %}
+                </td>
                 <td class="text-center">{{rs.writer}}</td>
                 <td class="text-center">{{rs.wdate}}</td>
-                <td class="text-center">{{rs.memoCount}}</td>
+                <td class="text-center">{{rs.hit}}</td>
             </tr>
             {% endfor %}
- 
+
         </tobody>
     </table>
+
 </div>
 <div class="container">
     <div class="row">
-        <div class="offset-md-2 col-md-7">
+        <div class="offset-md-2 col-md-8">
             <ul class="pagination justify-content-center">
-               
+
             </ul>
         </div>
-        <div class="col-md-3 text-right">
-            <a href="/" class="btn btn-secondary mr-4">목록</a>
-            <a href="/write" class="btn btn-secondary">글쓰기</a> 
-        </div>
+        
     </div>
 </div>
 {% endblock %}
 {% block indexScript %}
 <script src="js/paging.js"></script>
 <script>
-    $(function(){
-       $('.pagination').html(getPaging('{{maxList}}', 10, '{{totalCount}}', '{{page}}', "/"));
+    $(function () {
+        $('.pagination').html(getPaging('{{maxList}}', 10, '{{totalCount}}', '{{page}}', "/"));
     });
 </script>
 {% endblock %}

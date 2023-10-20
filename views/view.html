@@ -7,21 +7,21 @@
 <h1 class="text-center mb-5">{{title}}</h1>
 <div class="row flex-column view">
     <div class="title py-3 pl-2">
-           {{row[0].title}} 
+        {{row[0].title}}
     </div>
 </div>
 <div class="row view_info py-3">
-    <div class="col-8 d-flex">  
-         <div class="date pr-5">2023.09.22</div>
-         <div class="write pr-5">{{row[0].writer}}</div>
-         <div class="hit">hit: {{row[0].hit}}</div>
+    <div class="col-8 d-flex">
+        <div class="date pr-5">{{row[0].wdate}}</div>
+        <div class="write pr-5">{{row[0].writer}}</div>
+        <div class="hit">hit: {{row[0].hit}}</div>
     </div>
     <div class="col-4 sns text-right">
-         <a href="#" class="mr-3"><i class="ri-instagram-line"></i></a>
-         <a href="#" class="mr-3"><i class="ri-facebook-circle-line"></i></a>
-         <a href="#" class="mr-3"><i class="ri-kakao-talk-line"></i></a>
-         <a href="#"><i class="ri-youtube-line"></i></a>
-    </div>   
+        <a href="#" class="mr-3"><i class="ri-instagram-line"></i></a>
+        <a href="#" class="mr-3"><i class="ri-facebook-circle-line"></i></a>
+        <a href="#" class="mr-3"><i class="ri-kakao-talk-line"></i></a>
+        <a href="#"><i class="ri-youtube-line"></i></a>
+    </div>
 </div>
 <div class="content py-5">
     {{ row[0].contents | safe }}
@@ -29,52 +29,88 @@
 <div class="row justify-content-end mb-5">
     <a href="/rewrite/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">답변</a>
     <a href="/edit/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">수정</a>
-    <button type="button" 
-            class="btn btn-dark text-white px-3 mr-3"
-            data-target="#delModal" data-toggle="modal"
-    >삭제</button>
+    <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delModal"
+        data-toggle="modal">삭제</button>
     <a href="/" class="btn btn-dark text-white px-3">목록</a>
 </div>
 
-<div class="modal fade" role="dialog" 
-     id="delModal" tabindex="-1" 
-     aria-labelledby="delModalLabel"
-     aria-hidden="true"
->
+<div class="modal fade" role="dialog" id="delModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-danger">삭제</h5>
-                <button type="button" class="close"
-                        data-dismiss="modal" arial-label="close">
-                    <i class="ri-close-line"></i>     
+                <button type="button" class="close" data-dismiss="modal" arial-label="close">
+                    <i class="ri-close-line"></i>
                 </button>
             </div>
-        <form>    
-            <div class="modal-body">
-                <p>삭제 하시려면 비밀번호를 입력하세요</p>
-                    <input type="password" class="form-control" 
-                           id="password_del"
-                           placeholder="비밀번호" />
-                    <input type="hidden" id="delnum" value="{{row[0].num}}" />       
+            <form>
+                <div class="modal-body">
+                    <p>삭제 하시려면 비밀번호를 입력하세요</p>
+                    <input type="password" class="form-control" id="password_del" placeholder="비밀번호" />
+                    <input type="hidden" id="delnum" value="{{row[0].num}}" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-danger" id="del">삭제하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" role="dialog" id="delcommModal" tabindex="-1" aria-labelledby="delModalcommLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">삭제</h5>
+                <button type="button" class="close" data-dismiss="modal" arial-label="close">
+                    <i class="ri-close-line"></i>
+                </button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-danger" id="del">삭제하기</button>
-            </div>
-        </form>
+            <form>
+                <div class="modal-body">
+                    <p>삭제 하시려면 비밀번호를 입력하세요</p>
+                    <input type="password" class="form-control" id="passwordcomm_del" placeholder="비밀번호" />
+                    <input type="hidden" id="delcommnum" value="{{rs[0].num}}" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-danger" id="del_comment">삭제하기</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <hr />
-<form name="comment_form" method="post">
-
+<div class="container">
+    <ul class="list-group">
+        {% for res in rs %}
+        <li class="list-group-item d-flex">
+            <div class="col-2">
+                <h3>{{res.username}}</h3><small>{{res.cdate}}</small>
+            </div>
+            <div class="col-9">
+                <p>
+                    {{res.coment}}
+                </p>
+            </div>
+            <div class="col-1">
+                <a href="/edit_comment/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">수정</a>
+                <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delcommModal"
+                    data-toggle="modal">삭제</button>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<form name="comment_form" id="comment_form" method="post">
+    <input type="hidden" name="ndboard_num" value="{{row[0].num}}">
     <div class="container">
         <div class="row">
             <div class="col-3">
                 <label>이름</label>
-                <input type="text" name="username" class="form-control" /> 
+                <input type="text" name="username" class="form-control" />
             </div>
             <div class="col-3">
                 <label>비밀번호</label>
@@ -82,11 +118,11 @@
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-10"> 
-               <textarea id="memo-content" name="content" class="form-control"></textarea>
+            <div class="col-10">
+                <textarea id="memo-content" name="content" class="form-control"></textarea>
             </div>
             <div class="col-2">
-               <button type="button" class="btn btn-comment">전송</button> 
+                <button type="button" class="btn btn-comment">전송</button>
             </div>
         </div>
     </div>
@@ -99,16 +135,37 @@
 <script src="/js/summernote-bs4.min.js"></script>
 <script src="/js/lang/summernote-ko-KR.min.js"></script>
 <script>
-    $(function(){
+    $(function () {
         $("#memo-content").summernote({
             tabsize: 2,
-            height:150,
-            lang:"ko-KR",
+            height: 150,
+            lang: "ko-KR",
             toolbar: [
-          ['style', ['style']],
-          ['font', ['bold', 'underline', 'clear']],
-          ['color', ['color']]
-        ]
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']]
+            ]
+        });
+        $(".btn-comment").click(function () {
+            const data = $("#comment_form").serialize();
+            $.ajax({
+                url: "/comment_write",
+                type: "post",
+                dataType: 'json',
+                data: data,
+                success: function (rs) {
+                    const res = parseInt(rs);
+                    if (res > 0) {
+                        alert('성공적으로 등록되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('문제가 발생했습니다. \n 관리자에게 문의하십시오.');
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
         });
     });
 </script>
