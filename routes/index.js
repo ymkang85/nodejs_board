@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const upload = require("../upload");
+const fs = require("fs-extra");
 
 //mysql 연결
 const mysqlConnObj = require('../config/mysql');
@@ -73,6 +75,19 @@ router.post("/write", (req, res) => {
   res.redirect('/');
 });
 
+router.post("/write/imginsert", upload.single("img"), async (req, res, next) => {
+  try {
+    let imgurl;
+    if (req.file !== undefined) {
+      imgurl = req.file.filename;
+      res.json(imgurl);
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 router.get("/view/:num", (req, res) => {
   const { num } = req.params;
   const sql1 = "select * from ndboard where num = ?";
@@ -91,6 +106,7 @@ router.get("/view/:num", (req, res) => {
           odate = new Date(row2.cdate);
           row2.cdate = `${odate.getFullYear()}-${odate.getMonth() + 1}-${odate.getDate()}`;
         }
+        console.log(row);
         res.render("view", { title: "게시판 내용보기", row, rs });
       });
     }
@@ -226,32 +242,34 @@ router.route("/comment_write")
     })
   });
 
-  router.post("/del_comment", (req, res) => {
-    const { delpass, delcommnum } = req.body;
-    let sql = "select count(*) as ct from ndboard_comment where num = ? and userpass = ?";
-    conn.query(sql, [delcommnum, delpass], (err, row, fields) => {
-      if (err) {
-        console.log(err);
-        res.send('0');
+router.post("/del_comment", (req, res) => {
+  const { delpass, delcommnum } = req.body;
+  let sql = "select count(*) as ct from ndboard_comment where num = ? and userpass = ?";
+  conn.query(sql, [delcommnum, delpass], (err, row, fields) => {
+    if (err) {
+      console.log(err);
+      res.send('0');
+    } else {
+      if (row[0].ct > 0) {
+        let sql1 = "delete from ndboard_comment where num = ?";
+        let sql2 = "update ndboard set memocount = memocount - 1 where num = ?";
+        conn.query(sql1, delcommnum, (err, fields) => {
+          if (err) {
+            console.log(err);
+            res.send('0');
+          } else {
+            conn.query(sql2, req.body.num);
+            console.log('삭제성공');
+            res.send('1');
+          }
+        });
       } else {
-        if (row[0].ct > 0) {
-          sql = "delete from ndboard_comment where num = ?";
-          conn.query(sql, delcommnum, (err, fields) => {
-            if (err) {
-              console.log(err);
-              res.send('0');
-            } else {
-              console.log('삭제성공');
-              res.send('1');
-            }
-          });
-        } else {
-          console.log('비밀번호 틀림' + row[0].ct);
-          res.send('0');
-        }
+        console.log('비밀번호 틀림' + row[0].ct);
+        res.send('0');
       }
-    })
+    }
   })
-  
+})
+
 
 module.exports = router;

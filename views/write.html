@@ -51,8 +51,39 @@
     $(function(){
         $("#content").summernote({
             tabsize: 2,
-            height:300
+            height:300,
+            lang: "ko-KR",
+            callbacks: {
+                onImageUpload: function(files){
+                    //업로드 파일 등록
+                    upFile(files[0], this);
+                }
+            }
         });
     });
+
+    function upFile(file, editor) {
+        data = new FormData();
+        data.append("img", file); //id img로 file 데이터 추가
+        $.ajax({
+            url: "/write/imginsert",
+            type: "post",
+            cache: false,
+            contentType: false,
+            //multipart/form-data 형태로 넘겨야 함.
+            enctype: "multipart/form-data",
+            success: function(res){
+                const imgurl = $("<img>").attr({
+                    'src': "/images/" + res, // json 형태로 주소를 반환받아 넣는다.
+                    'crossorigin': 'anonymous' // cors 에러 방지
+                });
+                $("#content").summernote("insertNode", imgurl[0]);
+                //insertNode 는 html tag를 summernote 에디터 창에 삽입하는 기능
+            },
+            error: function(err){
+                console.error(err);
+            }
+        })
+    }
 </script>
 {% endblock %}
