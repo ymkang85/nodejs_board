@@ -3,6 +3,21 @@
 {% block content %}
 
 <h1 class="text-center mb-5">{{title}}</h1>
+<form method="get" name="form">
+    <nav class="ml-auto">
+        <select id="search_column" class="ml-3" name="search" onsubmit="handleSubmit">
+            <option value="">선택하세요.</option>
+            <option value="num">번호</option>
+            <option value="title">제목</option>
+            <option value="content">내용</option>
+            <option value="writer">작성자</option>
+            <option value="wdate">날짜</option>
+        </select>
+        <input type="text" id="search_text" name = 'column'>
+        <button type="submit" class="btn btn-secondary ml-3">검색</button>
+    </nav>
+</form>
+
 <div class="row justify-content-center">
     <table class="bbslist table-hover">
         <colgroup>
@@ -52,7 +67,7 @@
 
             </ul>
         </div>
-        
+
     </div>
 </div>
 {% endblock %}
@@ -62,5 +77,10 @@
     $(function () {
         $('.pagination').html(getPaging('{{maxList}}', 10, '{{totalCount}}', '{{page}}', "/"));
     });
+    const handleSubmit = e => {
+        e.preventDefault();
+        
+    }
+    
 </script>
 {% endblock %}
