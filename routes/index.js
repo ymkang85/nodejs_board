@@ -48,13 +48,16 @@ router.get('/', (req, res) => {
 
 router.get('/search', (req, res) => {
   let page = 1;
+  const columned = req.query.column;
+  const column = decodeURIComponent(columned);
+  const select = req.query.search;
   if (req.query.page) {
     page = parseInt(req.query.page);
   }
   const maxlist = 10;  //한 화면에 보여줄 목록 수
 
   let offset = (page - 1) * maxlist;  //limit 에 첫번째로 출력할 번호
-  let sql = "select count(*) as maxcount from ndboard";
+  let sql = "select count(*) as maxcount from ndboard where " + select + " = " + column ;
   conn.query(sql, (err, row, fields) => {
     if (err) {
       console.error(err)
@@ -62,10 +65,7 @@ router.get('/search', (req, res) => {
 
       const maxcount = row[0].maxcount; //전체 게시글 수   
       let limit = ` limit ${offset} , ${maxlist}`;
-
-      const column = req.query.column;
-      const select = req.query.search;
-      sql = "select * from ndboard  where "+ column +" = "+ select + " order by orNum desc, grNum asc " + limit;
+      sql = "select * from ndboard  where " + column + " = " + select + " order by orNum desc, grNum asc " + limit;
       conn.query(sql, (err, row, fields) => {
         if (err)
           console.log(err);
@@ -79,8 +79,8 @@ router.get('/search', (req, res) => {
           //console.log(row);
           res.render('index', { title: "게시판 목록", totalCount: maxcount, maxList: maxlist, page: page, row: row, column: column, select: select });
         }
-      }); 
-    } 
+      });
+    }
   });
 });
 

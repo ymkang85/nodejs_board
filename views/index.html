@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1 class="text-center mb-5">{{title}}</h1>
-<form method="get" name="form">
+<form method="get" name="form" action="/search">
     <nav class="ml-auto">
         <select id="search_column" class="ml-3" name="search" onsubmit="handleSubmit">
             <option value="">선택하세요.</option>
@@ -13,7 +13,7 @@
             <option value="writer">작성자</option>
             <option value="wdate">날짜</option>
         </select>
-        <input type="text" id="search_text" name = 'column'>
+        <input type="text" id="column" name='column'>
         <button type="submit" class="btn btn-secondary ml-3">검색</button>
     </nav>
 </form>
@@ -77,10 +77,11 @@
     $(function () {
         $('.pagination').html(getPaging('{{maxList}}', 10, '{{totalCount}}', '{{page}}', "/"));
     });
-    const handleSubmit = e => {
-        e.preventDefault();
-        
-    }
-    
+    $(function () {
+        let columned = $('#column').val();
+        let column = encodeURIComponent(columned);
+        return column;
+    });
+
 </script>
 {% endblock %}
