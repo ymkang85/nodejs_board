@@ -29,8 +29,8 @@
 <div class="row justify-content-end mb-5">
     <a href="/rewrite/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">답변</a>
     <a href="/edit/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">수정</a>
-    <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delModal"
-        data-toggle="modal">삭제</button>
+    <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delModal" data-toggle="modal"
+        data-char="main" data-delnum="{{row[0].num}}">삭제</button>
     <a href="/" class="btn btn-dark text-white px-3">목록</a>
 </div>
 
@@ -48,6 +48,8 @@
                     <p>삭제 하시려면 비밀번호를 입력하세요</p>
                     <input type="password" class="form-control" id="password_del" placeholder="비밀번호" />
                     <input type="hidden" id="delnum" value="{{row[0].num}}" />
+                    <input type="hidden" id="comment_delnum" />
+                    <input type="hidden" id="char" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
@@ -58,75 +60,73 @@
     </div>
 </div>
 
-<div class="modal fade" role="dialog" id="delcommModal" tabindex="-1" aria-labelledby="delModalcommLabel" aria-hidden="true">
+<!-- 코멘트 수정 모달-->
+<div class="modal fade" role="dialog" id="editModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-danger">삭제</h5>
+                <h5 class="modal-title text-danger">수정</h5>
                 <button type="button" class="close" data-dismiss="modal" arial-label="close">
                     <i class="ri-close-line"></i>
                 </button>
             </div>
             <form>
                 <div class="modal-body">
-                    <p>삭제 하시려면 비밀번호를 입력하세요</p>
-                    <input type="password" class="form-control" id="passwordcomm_del" placeholder="비밀번호" />
-                    <input type="hidden" id="delcommnum" value="{{rs[0].num}}" />
+                    <p>코멘트 수정</p>
+                    <textarea id="memo_comment" class="form-control mb-2" rows="4"></textarea>
+                    <input type="password" class="form-control" id="password_edt" placeholder="비밀번호" />
+                    <input type="hidden" id="comment_edtnum" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-danger" id="del_comment">삭제하기</button>
+                    <button type="button" class="btn btn-warning" id="edit">수정하기</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<!-- //코멘트 수정 모달-->
 
 <hr />
-<div class="container">
-    <ul class="list-group">
+<div class="row mt-5">
+    <ul class="list-group w-100">
         {% for res in rs %}
-        <li class="list-group-item d-flex">
+        <li class="list-group-item d-flex p-4">
             <div class="col-2">
-                <h3>{{res.username}}</h3><small>{{res.cdate}}</small>
+                <h3>{{res.username}} <small>({{res.cdate}})</small></h3>
             </div>
             <div class="col-9">
-                <p>
-                    {{res.coment}}
-                </p>
+                {{res.comment | safe}}
             </div>
-            <div class="col-1">
-                <a href="/edit_comment/{{row[0].num}}" class="btn btn-dark text-white px-3 mr-3">수정</a>
-                <button type="button" class="btn btn-dark text-white px-3 mr-3" data-target="#delcommModal"
-                    data-toggle="modal">삭제</button>
+            <div class="col-1 text-right">
+                <a href="javascript:void(0)" id="comment_del" class="btn btn-sm btn-danger text-white"
+                    data-target="#delModal" data-toggle="modal" data-char="comment" data-delnum="{{res.num}}">삭제</a>
+                <a href="#" class="mt-2 btn btn-sm btn-warning">수정</a>
             </div>
         </li>
         {% endfor %}
     </ul>
 </div>
 <form name="comment_form" id="comment_form" method="post">
-    <input type="hidden" name="ndboard_num" value="{{row[0].num}}">
-    <div class="container">
-        <div class="row">
-            <div class="col-3">
-                <label>이름</label>
-                <input type="text" name="username" class="form-control" />
-            </div>
-            <div class="col-3">
-                <label>비밀번호</label>
-                <input type="password" name="userpass" class="form-control" />
-            </div>
+    <input type="hidden" name="ndboard_num" value="{{row[0].num}}" />
+    <div class="row mt-5">
+        <div class="col-3">
+            <label>이름</label>
+            <input type="text" name="username" class="form-control" />
         </div>
-        <div class="row mt-4">
-            <div class="col-10">
-                <textarea id="memo-content" name="content" class="form-control"></textarea>
-            </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-comment">전송</button>
-            </div>
+        <div class="col-3">
+            <label>비밀번호</label>
+            <input type="password" name="userpass" class="form-control" />
         </div>
     </div>
-
+    <div class="row mt-4">
+        <div class="col-10">
+            <textarea id="memo-content" name="content" class="form-control"></textarea>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-comment">전송</button>
+        </div>
+    </div>
 </form>
 
 {% endblock %}

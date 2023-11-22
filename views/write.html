@@ -27,12 +27,6 @@
             <input type="text" name="title" class="form-control" placeholder="이름" id="title" required />
         </div>
     </div>
-    <div class="col-md-12 row align-items-center my-3">
-        <label class="col-md-1" for="title">내용</label>
-        <div class="col-md-11">
-            <textarea id="content" name="content" class="form-control"></textarea>
-        </div>
-    </div>
     <div class="col-md-12 text-center my-3">
         <button type="reset" class="btn btn-danger mr-3"> 취 소 </button>
         <button type="submit" class="btn btn-secondary ml-3"> 전 송 </button>
@@ -56,14 +50,30 @@
                 onImageUpload: function (files) {
                     //업로드 파일 등록
                     upFile(files[0], this);
+                },
+                onMediaDelete: function (file) {
+                    //alert(file[0].src);
+                    delFile(file[0].src);
                 }
             }
         });
     });
 
+    function delFile(file) {
+        $.ajax({
+            data: { file },
+            type: "POST",
+            url: '/write/imgdelete',
+            cache: false,
+            success: function (rs) {
+                console.log(rs);
+            }
+        })
+    }
+
     function upFile(file, editor) {
         data = new FormData();
-        const imnum = $("#imnum").val();
+        const imnum = $('#imnum').val();
         data.append("img", file); //id img로 file form 데이터 추가
         data.append("imnum", imnum);
         $.ajax({
@@ -76,8 +86,10 @@
             processData: false,
             data: data,
             success: function (res) {
+                console.log(res);
+                $("#imnum").val(res.imnum);
                 const imgurl = $("<img>").attr({
-                    'src': "/images/" + res,  //json 형태로 주소를 반환받아 넣는다.
+                    'src': "/images/" + res.imgurl,  //json 형태로 주소를 반환받아 넣는다.
                     'crossorigin': 'anonymous' //cors 에러 방지
                 });
                 $("#content").summernote("insertNode", imgurl[0]);

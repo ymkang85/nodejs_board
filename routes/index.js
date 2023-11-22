@@ -11,6 +11,30 @@ mysqlConnObj.open(conn);  //연결 출력
 
 //기본 주소 설정
 router.get('/', (req, res) => {
+  //쓰레기 파일 삭제
+  let que = "select num, filename from ndfile where bbs_num is null";
+  const deldir = './data/images/';
+  conn.query(que, (err, row, fields) => {
+    if (err) {
+      console.error(err)
+    } else {
+      if (row.length > 0) {
+        for (let f of row) {
+          rmfile(deldir + f.filename, '');
+          conn.query("delete from ndfile where num = " + f.num);
+        }
+      }
+    }
+  });
+  let search = "";
+  //검색
+  if (req.query.search_title) {
+    title = req.query.search_title;
+    txt = decodeURIComponent(req.query.search_text);
+    search = `and ${title} LIKE '%${txt}%'`;
+  }
+  console.table(req.query);
+
   let page = 1;
   if (req.query.page) {
     page = parseInt(req.query.page);
@@ -46,44 +70,6 @@ router.get('/', (req, res) => {
   });  //maxcount
 });
 
-router.get('/search', (req, res) => {
-  let page = 1;
-  const columned = req.query.column;
-  const column = decodeURIComponent(columned);
-  const select = req.query.search;
-  if (req.query.page) {
-    page = parseInt(req.query.page);
-  }
-  const maxlist = 10;  //한 화면에 보여줄 목록 수
-
-  let offset = (page - 1) * maxlist;  //limit 에 첫번째로 출력할 번호
-  let sql = "select count(*) as maxcount from ndboard where " + select + " = " + column ;
-  conn.query(sql, (err, row, fields) => {
-    if (err) {
-      console.error(err)
-    } else {
-
-      const maxcount = row[0].maxcount; //전체 게시글 수   
-      let limit = ` limit ${offset} , ${maxlist}`;
-      sql = "select * from ndboard  where " + column + " = " + select + " order by orNum desc, grNum asc " + limit;
-      conn.query(sql, (err, row, fields) => {
-        if (err)
-          console.log(err);
-        else {
-          let odate;
-          for (let rs of row) {
-            rs.grLayer *= 30;
-            odate = new Date(rs.wdate);
-            rs.wdate = `${odate.getFullYear()}-${odate.getMonth() + 1}-${odate.getDate()}`;
-          }
-          //console.log(row);
-          res.render('index', { title: "게시판 목록", totalCount: maxcount, maxList: maxlist, page: page, row: row, column: column, select: select });
-        }
-      });
-    }
-  });
-});
-
 router.get("/write", (req, res) => {
   res.render("write", { title: "게시판 글쓰기" });
 });
@@ -116,6 +102,17 @@ router.post("/write", (req, res) => {
     }
   });
   res.redirect('/');
+});
+
+router.post("/write/imgdelete", (req, res, next) => {
+  const src = req.body.src.split("/");
+  const src_name = src[src.length - 1];
+  const deldir = './data/images/' + src_name;
+  console.log(deldir);
+  rmfile(deldir, () => {
+    console.log("파일삭제완료");
+  })
+  res.send("1");
 });
 
 router.post("/write/imginsert", upload.single("img"), async (req, res, next) => {
@@ -163,11 +160,16 @@ router.get("/view/:num", (req, res) => {
     if (err) {
       console.log(err);
     } else {
+      let odate;
+      for (let row1 of row) {
+        odate = new Date(row1.wdate);
+        row1.wdate = `${odate.getFullYear()}-${odate.getMonth() + 1}-${odate.getDate()}`;
+      }
       conn.query(sql2, num, (err, rs, fields) => {
-        // let contents;
-        // for( res in rs ){
-        //    res.contests
-        // }
+        for (let row2 of rs) {
+          odate = new Date(row2.cdate);
+          row2.cdate = `${odate.getFullYear()}-${odate.getMonth() + 1}-${odate.getDate()}`;
+        }
         if (err) {
           console.error(err);
         } else {
@@ -293,6 +295,46 @@ router.post("/del", (req, res) => {
         });
       } else {
         console.log("비밀번호 틀림" + row[0].ct)
+        res.send('0');
+      }
+    }
+  })
+});
+
+/**
+ * 1. 게시물의 코멘트 번호를 하나 줄이는 작업
+ * 2. 코멘트 삭제
+ */
+router.post("/comment_del", (req, res) => {
+  const { delpass, delnum, comment_delnum } = req.body;
+  let sql;
+  //1. 비밀번호 확인
+  sql = "select num from ndboard_comment where num = ? and userpass=?";
+  conn.query(sql, [comment_delnum, delpass], (err, rs, fields) => {
+    if (err) {
+      console.log(err);
+      res.send('0');
+    } else {
+      if (rs.length > 0) {
+        //삭제작업
+        //1. 원본 코멘트 수 줄이기
+        sql = "update ndboard set memoCount = memoCount-1 where num = ?";
+        conn.query(sql, delnum);
+        //2. 코멘트 삭제
+        sql = "delete from ndboard_comment where num = ?";
+        conn.query(sql, comment_delnum, (err, row, fields) => {
+          if (err) {
+            console.log(err);
+            res.send('0')
+          } else {
+            if (row) {
+              res.send('1');
+            } else {
+              res.send('0')
+            }
+          }
+        })
+      } else {
         res.send('0');
       }
     }

@@ -1,0 +1,31 @@
+<form name="searchform" method="get" onsubmit="return checkForm()">
+    <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+            <select name="search_title" class="custom-select custom-select-sm mr-sm-2" id="inlineFormCustomSelect">
+                <option value="title">제목</option>
+                <option value="contents">내용</option>
+                <option value="writer">이름</option>
+            </select>
+        </div>
+        <div class="col-sm-6 my-1">
+            <input type="search" name="search_text" class="form-control form-control-sm" id="inlineFormInputName"
+                placeholder="검색...">
+        </div>
+        <div class="col-auto my-1">
+            <button type="submit" class="btn btn-sm btn-primary">전송</button>
+        </div>
+    </div>
+</form>
+<script>
+    function checkForm() {
+        const form = document.searchform;
+        if (form.search_text.value == '') {
+            alert("내용을 입력 하세요.");
+            form.search_text.focus();
+            return false;
+        }
+        const stext = encodeURIComponent(form.search_text.value);
+        document.getElementById("inlineFormInputName").value = stext;
+        return true;
+    }
+</script>

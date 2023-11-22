@@ -16,7 +16,17 @@ function getPaging(lSize, pSize, tCount, page, link) {
    const pageSize = parseInt(pSize);
    const totalCount = parseInt(tCount);
    const currentPage = parseInt(page);
-   let li = '<a href="/" class="btn btn-secondary mr-4">목록</a>', preStart, nextStart;
+
+   let li = "", preStart, nextStart;
+   let params = "";
+   if(window.location.search){
+      const para = window.location.search;
+      params = para.replace(/[\?]+[?page=]+[0-9]\&/g, "");
+      params = params.replace("?", "");
+      console.log(params);
+   }
+
+   li = '<a href="/" class="btn btn-secondary mr-4">목록</a>', preStart, nextStart;
    if (totalCount > listSize) {
       // 전체 페이지 수를 구함
       let totalPage = Math.ceil(totalCount / listSize);
@@ -29,32 +39,32 @@ function getPaging(lSize, pSize, tCount, page, link) {
       if (endPage > totalPage) endPage = totalPage;
 
       // 처음 페이지 이동
-      li += `<li class = "page-item"><a href="${link}?page=1" class="page-link">처음</a></li>`;
+      li += `<li class = "page-item"><a href="${link}?page=1&${params}" class="page-link">처음</a></li>`;
 
       // 이전 페이지 이동
       if(startPage + 1 >= pageSize){
          preStart = (startPage - pageSize);
-         li += `<li class = "page-item"><a href="${link}?page=${preStart}" class="page-link">이전</a></li>`;
+         li += `<li class = "page-item"><a href="${link}?page=${preStart}&${params}" class="page-link">이전</a></li>`;
       }
 
       // 페이지 출력
       for(i = startPage ; i <= endPage ; i++){
          if(currentPage == i){
-            li += `<li class="page-item" active><a href="${link}?page=${i}" class="page-link">${i}</a></li>`;
+            li += `<li class="page-item" active><a href="${link}?page=${i}&${params}" class="page-link">${i}</a></li>`;
          }else{
-            li += `<li class="page-item"><a href="${link}?page=${i}" class="page-link">${i}</a></li>`;
+            li += `<li class="page-item"><a href="${link}?page=${i}&${params}" class="page-link">${i}</a></li>`;
          }
       }
 
       // 다음 페이지 이동
       if(endPage < totalPage){
          nextStart = endPage + 1 ; 
-         li += `<li class = "page-item"><a href="${link}?page=${nextStart}" class="page-link">다음</a></li>`;
+         li += `<li class = "page-item"><a href="${link}?page=${nextStart}&${params}" class="page-link">다음</a></li>`;
       }
 
       // 마지막 페이지 이동
-      li += `<li class = "page-item"><a href="${link}?page=${totalPage}" class="page-link">마지막</a></li>`;
+      li += `<li class = "page-item"><a href="${link}?page=${totalPage}&${params}" class="page-link">마지막</a></li>`;
    }
-   li += '<a href="/write" class="btn btn-secondary">글쓰기</a>'
+   li += `<a href="/write" class="btn btn-secondary">글쓰기</a>`
    return li;
 }
